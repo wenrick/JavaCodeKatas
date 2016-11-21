@@ -11,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import fizzBuzz.StringCalculator.NegativeNumberException;
+
 @RunWith(Parameterized.class)
 public class StringCalculatorTest {
 	private String inputString;
@@ -34,13 +36,15 @@ public class StringCalculatorTest {
 				{ "1", 1 },
 				{ "1,2", 3 },
 				{ "1\n2,3", 6 },
-				{ "//;\n1;2", 3 }
+				{ "//;\n1;2", 3 },
+				{ "2,1001", 2 },
+				{ "2000,3,2", 5 },
+				{ "//[***]\n1***2***3", 6 }
 		});
 	}
 	
 	@Test
-	public void testAdd() {
+	public void testAdd() throws NegativeNumberException {
 		assertEquals(expectedResult,stringCalculator.Add(inputString));
 	}
-
 }

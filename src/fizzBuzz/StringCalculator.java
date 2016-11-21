@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class StringCalculator {
 	
-	public Integer Add(String numbers) {
+	public Integer Add(String numbers) throws NegativeNumberException {
 		Integer numberSum  = 0;
 		Integer endDelimiterIndex;
 		String customDelimiter;
@@ -13,10 +13,15 @@ public class StringCalculator {
 		ArrayList<Integer> foundNegatives = new ArrayList<Integer>();
 		
 		if(numbers.length() > 0) {
-			if(Pattern.matches("^//.+\\n.*", numbers)) {
+			if(Pattern.matches("^//.\\n.*", numbers)) {
 				endDelimiterIndex = numbers.indexOf("\n");
 				customDelimiter = numbers.substring(2,endDelimiterIndex);
-				myNumbers = numbers.substring(endDelimiterIndex+1).split(customDelimiter);
+				myNumbers = numbers.substring(endDelimiterIndex+1).split(Pattern.quote(customDelimiter));
+			}
+			else if(Pattern.matches("^//\\[.+\\]\\n.*", numbers)) {
+				endDelimiterIndex = numbers.indexOf("]\n");
+				customDelimiter = numbers.substring(3,endDelimiterIndex);
+				myNumbers = numbers.substring(endDelimiterIndex+2).split(Pattern.quote(customDelimiter));
 			}
 			else {
 				myNumbers = numbers.split(",|\n");
@@ -26,16 +31,26 @@ public class StringCalculator {
 				if(currentNumber < 0) {
 					foundNegatives.add(currentNumber);
 				}
-				else {
+				else if(currentNumber <= 1000) {
 					numberSum += Integer.valueOf(myNumbers[i]);
 				}
 			}
 			if(foundNegatives.size() > 0) {
-//				throw "negatives not allowed ";
+				throw new NegativeNumberException("negatives not allowed " + foundNegatives.toString());
 			}
 		}
 		
 		return numberSum;
 	}
 
+	public class NegativeNumberException extends Exception {
+		
+		private static final long serialVersionUID = 1L;
+		
+		public NegativeNumberException() {}
+		
+		public NegativeNumberException(String message) {
+			super(message);
+		}
+	}
 }
